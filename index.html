@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Projects</title>
+</head>
+<body>
+  <h1>Project List</h1>
+  <ul id="project-list"></ul>
+
+  <script>
+    fetch('https://opensheet.elk.sh/1CKi0BBGWSAeOFp2CGEkPA37kpeq18mDqs1j07A9pP7s/Form Responses 1')
+      .then(response => response.json())
+      .then(data => {
+        const list = document.getElementById('project-list');
+        data
+          .filter(project => project.Approved && project.Approved.trim() !== '')
+          .forEach(project => {
+            const item = document.createElement('li');
+            item.innerHTML = `<strong>${project.Title}</strong>: ${project.Description}`;
+            list.appendChild(item);
+          });
+      });
+  </script>
+</body>
+</html>
