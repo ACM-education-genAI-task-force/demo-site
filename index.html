@@ -1,12 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Project List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    #project-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 1rem 1.5rem;
+      margin: 1rem auto;
+      max-width: 600px;
+      width: 100%;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.01);
+    }
+
+    .card a {
+      color: #007acc;
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
+
+    .card a:hover {
+      text-decoration: underline;
+    }
+
+    .card p {
+      margin-top: 0.5rem;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
   <h1>Project List</h1>
-  <ul id="project-list"></ul>
+  <div id="project-list"></div>
 
   <script>
     fetch('https://opensheet.elk.sh/1CKi0BBGWSAeOFp2CGEkPA37kpeq18mDqs1j07A9pP7s/Form Responses 1')
@@ -16,16 +64,29 @@
         data
           .filter(project => project.Approved && project.Approved.trim() !== '')
           .forEach(project => {
-            const item = document.createElement('li');
-  
-            const link = project.Link && project.Link.trim() !== ''
-              ? `<a href="${project.Link}" target="_blank">${project['Name of approach']}</a>`
-              : project['Name of approach'];
-  
-            item.innerHTML = `<strong>${link}</strong>: ${project.Description}`;
-            list.appendChild(item);
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const name = project["Name of approach"];
+            const description = project.Description;
+            const link = project.Link;
+
+            const nameHtml = link && link.trim() !== ''
+              ? `<a href="${link}" target="_blank">${name}</a>`
+              : name;
+
+            card.innerHTML = `
+              <div><strong>${nameHtml}</strong></div>
+              <p>${description}</p>
+            `;
+            list.appendChild(card);
           });
+      })
+      .catch(error => {
+        console.error("Error loading project data:", error);
+        const list = document.getElementById('project-list');
+        list.innerHTML = "<p>Sorry, we couldn't load the project list right now.</p>";
       });
-  </script>  
+  </script>
 </body>
 </html>
